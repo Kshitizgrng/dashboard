@@ -1,0 +1,7 @@
+plotly 
+statsmodels 
+groq
+streamlit
+pandas
+matplotlib
+numpy
