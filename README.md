@@ -28,7 +28,4 @@ A full-stack data application built with **Python** and **Streamlit** to visuali
 * **Raw Data View:** Built-in "Expander" allowing users to inspect the underlying dataset.
 * **Export Capability:** One-click "Download CSV" feature for offline analysis.
 
-## Setup Instructions
-1. Clone the repo:
-   ```bash
-   git clone [https://github.com/kshitizgrng/Sales-Intelligence-Dashboard.git](https://github.com/kshitizgrng/Sales-Intelligence-Dashboard.git)
+
