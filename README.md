@@ -31,4 +31,4 @@ A full-stack data application built with **Python** and **Streamlit** to visuali
 ## Setup Instructions
 1. Clone the repo:
    ```bash
-   git clone [https://github.com/yourusername/Sales-Intelligence-Dashboard.git](https://github.com/yourusername/Sales-Intelligence-Dashboard.git)
+   git clone [https://github.com/kshitizgrng/Sales-Intelligence-Dashboard.git](https://github.com/kshitizgrng/Sales-Intelligence-Dashboard.git)
