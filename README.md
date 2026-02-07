@@ -3,9 +3,9 @@
 ## Executive Summary
 A full-stack data application built with **Python** and **Streamlit** to visualize global sales performance. This dashboard transforms raw CSV data into actionable insights, allowing stakeholders to track KPIs like **Total Sales**, **Profit Margins**, and **Quantity Sold** in real-time.
 
-### 🟢 **[Click Here to Launch Live Dashboard](https://dashboard-2kvkir4bhuwfw6dudfpg3c.streamlit.app/)**
+### **[Click Here to Launch Live Dashboard](https://dashboard-2kvkir4bhuwfw6dudfpg3c.streamlit.app/)**
 
-## 🛠️ Tech Stack
+## Tech Stack
 * **Core Logic:** Python 3.10+
 * **Frontend Framework:** Streamlit
 * **Data Manipulation:** Pandas
