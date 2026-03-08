@@ -8,6 +8,7 @@ import io
 import math
 import pandas as pd
 import numpy as np
+import requests
 from pathlib import Path
 import streamlit as st
 import plotly.express as px
@@ -166,8 +167,6 @@ def _groq_chat_completion(api_key: str, prompt: str, model: str = "llama-3.3-70b
     """
     Calls Groq's OpenAI-compatible chat completions endpoint via requests.
     """
-    import requests
-
     url = "https://api.groq.com/openai/v1/chat/completions"
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     payload = {
@@ -179,10 +178,26 @@ def _groq_chat_completion(api_key: str, prompt: str, model: str = "llama-3.3-70b
         "max_completion_tokens": int(max_completion_tokens),
         "temperature": float(temperature),
     }
-    r = requests.post(url, headers=headers, json=payload, timeout=60)
-    r.raise_for_status()
-    data = r.json()
-    return data["choices"][0]["message"]["content"]
+    try:
+        r = requests.post(url, headers=headers, json=payload, timeout=60)
+        r.raise_for_status()
+        data = r.json()
+        return data["choices"][0]["message"]["content"]
+    except requests.exceptions.Timeout as exc:
+        raise RuntimeError("Groq took too long to respond. Please try again in a moment.") from exc
+    except requests.exceptions.HTTPError as exc:
+        status_code = exc.response.status_code if exc.response is not None else None
+        if status_code == 401:
+            message = "Groq rejected the API key. Please check the key in the sidebar and try again."
+        elif status_code == 429:
+            message = "Groq rate limit reached. Please wait a bit and retry."
+        else:
+            message = "Groq could not process the request right now. Please try again."
+        raise RuntimeError(message) from exc
+    except requests.exceptions.RequestException as exc:
+        raise RuntimeError("Could not reach Groq. Check your connection and try again.") from exc
+    except (KeyError, IndexError, TypeError, ValueError) as exc:
+        raise RuntimeError("Groq returned an unexpected response. Please try again.") from exc
 
 
 def _figure_title(fig) -> str:
@@ -190,7 +205,7 @@ def _figure_title(fig) -> str:
         t = fig.layout.title.text
         if t:
             return str(t)
-    except Exception:
+    except (AttributeError, TypeError, ValueError):
         pass
     return "Untitled chart"
 
@@ -200,13 +215,13 @@ def _figure_label(fig, idx: int, used=None) -> str:
     title = ""
     try:
         title = str(fig.layout.title.text or "").strip()
-    except Exception:
+    except (AttributeError, TypeError, ValueError):
         title = ""
 
     # Basic chart shape/type
     try:
         traces = list(fig.data) if hasattr(fig, "data") else []
-    except Exception:
+    except (AttributeError, TypeError, ValueError):
         traces = []
     trace_types = []
     trace_names = []
@@ -229,18 +244,18 @@ def _figure_label(fig, idx: int, used=None) -> str:
     def _axis_title(axis_obj):
         try:
             return str(axis_obj.title.text or "").strip()
-        except Exception:
+        except (AttributeError, TypeError, ValueError):
             return ""
 
     xlab = ""
     ylab = ""
     try:
         xlab = _axis_title(fig.layout.xaxis)
-    except Exception:
+    except (AttributeError, TypeError, ValueError):
         xlab = ""
     try:
         ylab = _axis_title(fig.layout.yaxis)
-    except Exception:
+    except (AttributeError, TypeError, ValueError):
         ylab = ""
 
     # If title missing, synthesize a useful one
